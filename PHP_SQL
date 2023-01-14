@@ -1,0 +1,68 @@
+
+Install Apache web server by running the following command:
+sudo apt-get update && sudo apt-get install apache2 -y
+sudo apt-get install php libapache2-mod-php -y
+sudo apt-get install php-mysql -y
+
+Start Apache service by running the command 
+sudo service apache2 start
+
+sudo apt-get install php libapache2-mod-php -y
+sudo service apache2 restart
+________________
+
+
+
+<form action="update_user.php" method="post">
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name"><br><br>
+
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email"><br><br>
+
+  <label for="phone">Phone Number:</label>
+  <input type="tel" id="phone" name="phone"><br><br>
+
+  <input type="submit" value="Update">
+</form>
+
+____________________________
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(255) NOT NULL
+);
+INSERT INTO users (name, email, phone) VALUES ('bhagyesh', 'abc@gmail.com', '879556485');
+
+update.php
+<?php
+
+// Connect to Cloud SQL
+$host = '34.170.231.14';
+$dbname = 'userdata';
+$user = 'test-user';
+$password = '123456789';
+$conn = mysqli_connect($host, $user, $password, $dbname);
+
+// Check for form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  // Get form data
+  $name = $_POST['name'];
+  $email = $_POST['email'];
+  $phone = $_POST['phone'];
+
+  // Insert data into Cloud SQL
+  $sql = "INSERT INTO users (name, email, phone) VALUES ('$name', '$email', '$phone')";
+  $result = $conn->query($sql);
+
+  // Check for success
+  if ($result) {
+    echo 'User details updated successfully.';
+  } else {
+    echo 'Error: ' . $conn->error;
+  }
+}
+
+?>
