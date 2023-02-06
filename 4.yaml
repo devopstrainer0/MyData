@@ -1,0 +1,46 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-static-website-bucket
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+
+  MyCloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: !GetAtt [MyS3Bucket, DomainName]
+            Id: MyS3BucketOrigin
+            S3OriginConfig: {}
+        DefaultCacheBehavior:
+          TargetOriginId: MyS3BucketOrigin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: ['GET', 'HEAD', 'OPTIONS']
+          CachedMethods: ['GET', 'HEAD']
+          ForwardedValues:
+            QueryString: false
+          DefaultTTL: 86400
+          MinTTL: 0
+        ViewerCertificate:
+          AcmCertificateArn: arn:aws:acm:us-east-1:XXXXXXXXXX:certificate/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXX
+          SslSupportMethod: sni-only
+        Aliases:
+          - my-static-website.com
+        DefaultRootObject: index.html
+        PriceClass: PriceClass_100
+        Enabled: true
+
+  MyRoute53Record:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: ZXXXXXXXXXX
+      Name: my-static-website.com
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt [MyCloudFrontDistribution, DomainName]
+        HostedZoneId: Z2FDTNDATAQYW2
