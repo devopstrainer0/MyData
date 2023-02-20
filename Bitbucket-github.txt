@@ -1,0 +1,14 @@
+Clone the Bitbucket repository: First, clone the Bitbucket repository locally using the Git command-line tool.
+
+Identify the files larger than 100 MB: Use Git's built-in tool, git rev-list, to identify which commits in the Git history contain files larger than 100 MB. Here is an example command:
+git rev-list --objects --all | grep -E "^\w+ [0-9]{9,} (.*[0-9]{8,})*" | cut -f1 -d" " | sort | uniq | xargs -L1 git ls-tree -r --long | awk '{if ($4 > 100000000) print $3}' | sort | uniq
+
+This command will output a list of the files that are larger than 100 MB, along with the commit hash in which they were added.
+
+Use Git filter-branch: Once you have identified the commits that contain the large files, you can use Git filter-branch to remove them from the history. Here is an example command:
+git filter-branch --tree-filter 'git rm --cached --ignore-unmatch path/to/large/file' --prune-empty -- --all
+This command will remove the specified large file from all branches in the Git history.
+
+Force push the changes: After running Git filter-branch, you will need to force push the changes to the remote repository on GitHub using the following command:
+
+git push --force origin master
