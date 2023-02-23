@@ -1,0 +1,31 @@
+name: Upload JAR to Artifactory
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install JFrog CLI
+        run: |
+          curl -fL https://getcli.jfrog.io | sh
+          sudo mv jfrog /usr/local/bin/
+
+      - name: Build JAR
+        run: mvn package
+
+      - name: Upload JAR to Artifactory
+        env:
+          ARTIFACTORY_URL: <ARTIFACTORY_URL>
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+        run: |
+          jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USERNAME --password $ARTIFACTORY_PASSWORD
+          jfrog rt upload target/*.jar <ARTIFACTORY_REPO>/<ARTIFACTORY_PATH> --flat=false --props "build.number=${GITHUB_RUN_NUMBER}"
