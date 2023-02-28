@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Set the output file name
+output_file="output.html"
+
+# Start the HTML file with basic structure
+echo "<!DOCTYPE html>" > $output_file
+echo "<html>" >> $output_file
+echo "<head>" >> $output_file
+echo "<title>JSON to HTML Example</title>" >> $output_file
+echo "</head>" >> $output_file
+echo "<body>" >> $output_file
+echo "<table>" >> $output_file
+echo "<th>Application name</th>" >> $output_file
+echo "<th>Display Name</th>" >> $output_file
+#echo "</br>" >> $output_file
+# Loop through each JSON file
+for file in *.json
+do
+  
+ 
+  # Extract the data from the JSON file using jq
+  data=$(jq '.hs' $file)
+
+  
+  # Add the data to the HTML file as a table
+   echo "$data" | jq -c '.[]' | while read i; do
+
+    echo "$i" | jq -r '.asj'
+    
+    echo "<tr><td>$(basename $file .json)</td><td>$(echo "$i" | jq -r '.asj')</td></tr>" >> $output_file
+
+done
+  
+ 
+done
+
+# Close the HTML file
+echo "</body>" >> $output_file
+echo "</html>" >> $output_file
