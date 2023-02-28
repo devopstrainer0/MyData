@@ -1,0 +1,87 @@
+pipeline {
+    agent any
+  
+    stages {
+        stage('Example') {
+            steps {
+                echo 'Hello World'
+                sh '''
+                cat <<EOF >> 1.json
+                {
+	"bah":"ajs",
+	"hs": [
+	{
+		"asj":"as: ka : sa",
+		"jkj":{
+		"sa":"jd"
+		}
+	},
+	{
+		"asj":"as: ka1 : sa",
+		"jkj":{
+		"sa":"jd"
+		}
+	}
+	]
+
+}
+EOF
+ls -ltr
+                
+                '''
+                sh '''
+                #!/bin/bash
+
+# Set the output file name
+output_file="output.html"
+mkdir -p coverage
+rm -rf coverage/$output_file
+# Start the HTML file with basic structure
+echo "<!DOCTYPE html>" > coverage/$output_file
+echo "<html>" >> coverage/$output_file
+echo "<head>" >> coverage/$output_file
+echo "<title>JSON to HTML Example</title>" >> coverage/$output_file
+echo "</head>" >> coverage/$output_file
+echo "<body>" >> coverage/$output_file
+echo "<table>" >> coverage/$output_file
+echo "<th>Application name</th>" >> coverage/$output_file
+echo "<th>Display Name</th>" >> coverage/$output_file
+#echo "</br>" >> coverage/$output_file
+# Loop through each JSON file
+for file in *.json
+do
+  
+ 
+  # Extract the data from the JSON file using jq
+  data=$(jq '.hs' $file)
+
+  
+  # Add the data to the HTML file as a table
+   echo "$data" | jq -c '.[]' | while read i; do
+
+  
+    echo "<tr><td>$(basename $file .json)</td><td>$(echo "$i" | jq -r '.asj')</td></tr>" >> coverage/$output_file
+
+done
+  
+ 
+done
+
+# Close the HTML file
+echo "</body>" >> coverage/$output_file
+echo "</html>" >> coverage/$output_file
+
+ls -ltr
+                '''
+            publishHTML target: [
+            allowMissing: false,
+            alwaysLinkToLastBuild: false,
+            keepAll: false,
+            reportDir: '.',
+            reportFiles: 'output.html',
+            reportName: 'Report'
+          ]
+            }
+        }
+    }
+}
