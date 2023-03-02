@@ -2,7 +2,7 @@
 
 
 # Set the output file name
-output_file="output.html"
+output_file="output1.html"
 # Start the HTML file with basic structure
 echo "<!DOCTYPE html>" > $output_file
 echo "<html>" >> $output_file
@@ -17,15 +17,21 @@ echo "table, th, td {
   padding-left: 30px;
   padding-right: 40px;
 
-}" >> $output_file
+}
+
+.textWhite {
+  color: white;
+  background-color: #00008B;
+}
+" >> $output_file
 echo "</style>" >> $output_file
 echo "</head>" >> $output_file
 echo "<body>" >> $output_file
 echo "<table>" >> $output_file
-echo "<th>Application name</th>" >> $output_file
-echo "<th>failure</th>" >> $output_file
-echo "<th>status</th>" >> $output_file
-echo "<th>Display Name</th>" >> $output_file
+echo "<th class="textWhite">Application name</th>" >> $output_file
+echo "<th class="textWhite">failure</th>" >> $output_file
+echo "<th class="textWhite">status</th>" >> $output_file
+echo "<th class="textWhite">Display Name</th>" >> $output_file
 # Loop through each JSON file
 for file in *.json
 do
