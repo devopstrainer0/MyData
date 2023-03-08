@@ -1,0 +1,109 @@
+ #!/bin/bash
+
+
+# Set the output file name
+output_file="output.html"
+required_version="$1"
+
+# Start the HTML file with basic structure
+echo "<!DOCTYPE html>" > $output_file
+echo "<html>" >> $output_file
+echo "<head>" >> $output_file
+echo "<title>JSON to HTML Example</title>" >> $output_file
+echo "<style>" >> $output_file
+echo "table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  padding-left: 30px;
+  padding-right: 40px;
+
+}
+
+.textWhite {
+  color: white;
+  background-color: #00008B;
+}
+
+.textRed {
+  background-color: #00008B;
+}
+
+" >> $output_file
+echo "</style>" >> $output_file
+echo "</head>" >> $output_file
+echo "<body>" >> $output_file
+echo "<table>" >> $output_file
+echo "<th class="textWhite">Application name</th>" >> $output_file
+echo "<th class="textWhite">Docker</th>" >> $output_file
+
+echo "required_version:$required_version"
+
+required_version_major=$(echo $required_version |awk -F '.' '{print $1}')
+
+
+required_version_minor=$(echo $required_version |awk -F '.' '{print $2}')
+
+
+required_version_patch=$(echo $required_version |awk -F '.' '{print $3}')
+
+
+for file in *.txt
+do
+  
+current_version=$(cat $file |grep FROM | awk -F ' ' '{print $2}' | awk -F ':' '{print $2}')
+echo "current_version:$current_version"
+current_version_major=$(echo $current_version |awk -F '.' '{print $1}')
+
+
+current_version_minor=$(echo $current_version |awk -F '.' '{print $2}')
+
+
+current_version_patch=$(echo $current_version |awk -F '.' '{print $3}')
+
+flag=false
+
+	
+	  echo	"<tr><th>$(basename $file .txt)</th>"  >> $output_file
+if [ $current_version_major -gt  $required_version_major ]; then
+	echo "$current_version is greater than $required_version"
+	flag=true
+elif [ $current_version_major -eq  $required_version_major ]; then
+	if [ $current_version_minor -gt  $required_version_minor ]; then
+	 	echo "$current_version is greater than $required_version"
+	 	flag=true
+	elif [ $current_version_minor -eq  $required_version_minor ]; then
+		 if [ $current_version_patch -gt  $required_version_patch ]; then
+		     echo "$current_version is grater than $required_version"
+		     flag=true
+		 elif [ $current_version_patch -eq  $required_version_patch ]; then
+		 	flag=true
+		 else
+		 	flag=false   
+		 fi
+	else
+		flag=false
+	fi
+else
+	flag=false;	
+fi
+
+   
+if [ "$flag" = true ]; then
+	echo "current version($current_version) greater than required version($required_version)"
+	echo "<td>$current_version</td></tr>" >> $output_file
+else
+	echo "current version($current_version) less than required version($required_version)"
+	echo "<td class="textRed"><font color="red">$current_version</font></td></tr>" >> $output_file
+fi	
+
+
+
+done
+
+
+# Close the HTML file
+echo "</body>" >> $output_file
+echo "</html>" >> $output_file
+
