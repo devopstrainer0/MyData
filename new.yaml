@@ -1,0 +1,7 @@
+stages:
+  - fetch_gcs_details
+
+fetch_gcs_details:
+  stage: fetch_gcs_details
+  script:
+    - gsutil ls gs://${GCS_BUCKET_NAME}/${GCS_OBJECT_NAME}
