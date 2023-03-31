@@ -1,0 +1,32 @@
+name: Create Tag
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main # replace "main" with the branch name you want to monitor
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Set up Git
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x' # replace '3.x' with the Python version you want to use
+    - name: Install dependencies
+      run: |
+        pip install bumpversion # install the bumpversion package
+    - name: Bump version
+      run: |
+        bumpversion patch # increase the patch version (you can use "minor" or "major" instead)
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create tag
+      if: github.event.pull_request.merged == true
+      run: |
+        git tag -a v$(bumpversion --dry-run --list | grep current_version | sed -r 's/.*=([0-9\.]*)/\1/') -m "Tagged by GitHub Actions"
+        git push origin --tags
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
