@@ -1,0 +1,25 @@
+name: Create Tag on Protected Branch
+
+on:
+  push:
+    branches:
+      - main # replace with the name of your protected branch
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get version number from file
+        run: |
+          VERSION=$(grep -oP '^VERSION=\K[0-9\.]+' version.txt)
+          echo "Version number is $VERSION"
+      - name: Create tag
+        uses: anothrNick/github-tag-action@v1.24.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}-${{ env.VERSION }}
+          message: "Tag created for version ${{ env.VERSION }} on branch ${{ github.ref_name }}"
+          ref: ${{ github.ref }}
