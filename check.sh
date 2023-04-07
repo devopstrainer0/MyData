@@ -3,3 +3,6 @@ if jq -e . >/dev/null 2>&1 <<<"$json_string"; then
 else
     echo "Failed to parse JSON, or got false/null"
 fi
+
+
+new_json_str=$(echo "$json_str" | jq 'del(.key_to_remove)')
