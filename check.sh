@@ -8,3 +8,6 @@ fi
 new_json_str=$(echo "$json_str" | jq 'del(.key_to_remove)')
 
 jq 'del(.scanResults[].JsonResult.vulnerabilities[].details.body.htmlDetails)' input.json > updated_input.json
+
+
+jq 'del(.scanResults[].JsonResult.vulnerabilities[].details.body.htmlDetails)' input.json > temp.json && mv temp.json input.json
