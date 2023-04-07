@@ -11,3 +11,4 @@ jq 'del(.scanResults[].JsonResult.vulnerabilities[].details.body.htmlDetails)' i
 
 
 jq 'del(.scanResults[].JsonResult.vulnerabilities[].details.body.htmlDetails)' input.json > temp.json && mv temp.json input.json
+    jq 'del(.scanResults[].JsonResult.vulnerabilities[].details.body.htmlDetails)' "$file" > temp.json && mv temp.json "$file"
