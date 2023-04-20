@@ -13,7 +13,7 @@ pipeline {
         failure {
             mail to: 'you@example.com',
                  subject: 'Job failed: ${currentBuild.fullDisplayName}',
-                 body: "The job '${currentBuild.fullDisplayName}' failed. Please investigate."
+                 body: "The build failed. Job URL: ${env.BUILD_URL}"
         }
     }
 }
