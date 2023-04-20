@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                // Run build steps here
+            }
+        }
+    }
+
+    post {
+        failure {
+            mail to: 'you@example.com',
+                 subject: 'Job failed: ${currentBuild.fullDisplayName}',
+                 body: "The job '${currentBuild.fullDisplayName}' failed. Please investigate."
+        }
+    }
+}
