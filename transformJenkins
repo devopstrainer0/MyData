@@ -1,5 +1,5 @@
 def call(Map params = [:]) {
-   
+    def jsonSlurper = new groovy.json.JsonSlurperClassic()
     println params
     println "*********************************************"
     println "Name: ${params.name}"
@@ -14,13 +14,16 @@ def call(Map params = [:]) {
             if (count == 0) {
                 println "The count is 0!"
                 println "Value: ${value}"
-               cList = Eval.me(value)
+               cList = jsonSlurper.parseText(value)
                 println "cList: ${cList}"
                 count++
             } else {
                 println "The count is 1!"
                 println "Value: ${value}"
-                bList = Eval.me(value)
+              
+
+
+                bList = jsonSlurper.parseText(value)
                 println "bList: ${bList}"
             }
         }
