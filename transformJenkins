@@ -39,4 +39,8 @@ def call(Map params = [:]) {
     
     println "*********************************************"
     println params
+      def newParams = [:]
+    newParams.putAll(params)
+    newParams.remove('inputScan')
+    println newParams
 }
