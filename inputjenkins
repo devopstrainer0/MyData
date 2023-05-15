@@ -1,0 +1,15 @@
+@Library('pipeline-library-demo') _
+
+test([
+    name: "bhagyesh",
+    number: "83084123",
+    compname: "",
+    buildfile: "",
+    giturl: "",
+    inputScan: [
+        "https://github.com/devopstrainer0/JenkinsCICD1.git": ['["a","b","c"]', '["1","2","3"]'],
+        "https://github.com/devopstrainer0/JenkinsCICD2.git": ['["x","y","z"]', '["7","8","9"]'],
+        "https://github.com/devopstrainer0/JenkinsCICD3.git": ['["g","h","i"]', '["11","12","13"]'],
+        "https://github.com/devopstrainer0/JenkinsCICD4.git": ['["p","q","r"]', '["17","18","19"]']
+    ]
+])
